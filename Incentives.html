@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viron – Incentives & TCO</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">Viron</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="Charging_Map.html">Charging Map</a></li>
+      <li><a href="Benefits_myths.html">Benefits &amp; Myths</a></li>
+      <li><a href="Incentives.html" class="active">Incentives &amp; TCO</a></li>
+      <li><a href="FAQ_about.html">FAQ &amp; About</a></li>
+    </ul>
+  </nav>
+
+  <section id="incentives" class="active">
+    <div class="page-header">
+      <h1>Incentives &amp; TCO Calculator</h1>
+      <p class="lead">Calculate your potential savings and discover available incentives in your area.</p>
+    </div>
+
+    <div class="calculator-grid">
+      <div class="card">
+        <h2>Find Your Rebate</h2>
+        <div class="form-group">
+          <label>Select State/Territory:
+            <select id="state-select" class="control-select">
+              <option value="NSW">NSW</option>
+              <option value="VIC">VIC</option>
+              <option value="QLD">QLD</option>
+              <option value="SA">SA</option>
+              <option value="WA">WA</option>
+              <option value="TAS">TAS</option>
+              <option value="NT">NT</option>
+              <option value="ACT">ACT</option>
+            </select>
+          </label>
+          <button class="btn primary" onclick="showRebate()">Check Rebates</button>
+        </div>
+        <div id="rebate-result" class="result-box"></div>
+        <div class="additional-info">
+          <h3>Additional Benefits</h3>
+          <ul class="info-list">
+            <li>Stamp duty exemptions</li>
+            <li>Registration discounts</li>
+            <li>FBT exemptions for business</li>
+            <li>Free parking in some areas</li>
+            <li>Access to transit lanes</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>TCO Calculator</h2>
+        <form id="tco-form" class="form-group">
+          <label>Annual kilometres: 
+            <input type="number" id="km" value="15000" min="0" />
+          </label>
+          <label>Fuel price ($/L): 
+            <input type="number" id="fuelPrice" value="2.1" step="0.01" min="0" />
+          </label>
+          <label>Electricity rate ($/kWh): 
+            <input type="number" id="elecRate" value="0.25" step="0.01" min="0" />
+          </label>
+          <button type="button" class="btn primary" onclick="calcTCO()">Calculate Savings</button>
+        </form>
+        <div id="tco-result" class="result-box"></div>
+      </div>
+
+      <div class="card">
+        <h2>Emissions Savings</h2>
+        <div id="emissions-chart"></div>
+        <div class="form-group">
+          <label>Select your current car:
+            <select id="car-comparison" class="control-select">
+              <option value="small">Small Sedan</option>
+              <option value="medium">Medium SUV</option>
+              <option value="large">Large SUV</option>
+            </select>
+          </label>
+        </div>
+        <div class="emissions-info">
+          <h3>Environmental Impact</h3>
+          <p>Switching to an EV can reduce your carbon footprint by up to 70% over the vehicle's lifetime.</p>
+          <ul class="info-list">
+            <li>Zero tailpipe emissions</li>
+            <li>Lower lifecycle emissions</li>
+            <li>Supporting renewable energy</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h2>Ready to Make the Switch?</h2>
+      <p>Explore our other resources to help you make an informed decision about going electric.</p>
+      <div class="cta-buttons">
+        <a href="Charging_Map.html" class="btn primary">Find Chargers</a>
+        <a href="Benefits_myths.html" class="btn secondary">Learn Benefits</a>
+      </div>
+    </div>
+  </section>
+
+  <script src="main.js"></script>
+</body>
+</html>

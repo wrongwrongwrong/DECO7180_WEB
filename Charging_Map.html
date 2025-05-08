@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viron – Charging Station Map</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">Viron</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="Charging_Map.html" class="active">Charging Map</a></li>
+      <li><a href="Benefits_myths.html">Benefits &amp; Myths</a></li>
+      <li><a href="Incentives.html">Incentives &amp; TCO</a></li>
+      <li><a href="FAQ_about.html">FAQ &amp; About</a></li>
+    </ul>
+  </nav>
+
+  <section id="map" class="active">
+    <div class="page-header">
+      <h1>Nation‑wide Charging Map</h1>
+      <p class="lead">Find charging stations near you with real-time availability and detailed information.</p>
+    </div>
+
+    <div class="map-container">
+      <div class="map-controls">
+        <select id="charger-type" class="control-select">
+          <option value="all">All Chargers</option>
+          <option value="ultra">Ultra-Fast (150kW+)</option>
+          <option value="fast">Fast Chargers (50kW+)</option>
+          <option value="standard">Standard Chargers</option>
+        </select>
+        <div class="search-box">
+          <input type="text" id="location-search" placeholder="Search by suburb or postcode...">
+          <button class="btn" id="use-location">Use My Location</button>
+        </div>
+      </div>
+      <div id="map-container"></div>
+      <div class="map-legend">
+        <span class="legend-item"><span class="dot ultra"></span> Ultra-Fast (150kW+)</span>
+        <span class="legend-item"><span class="dot fast"></span> Fast (50kW+)</span>
+        <span class="legend-item"><span class="dot standard"></span> Standard</span>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="card">
+        <h2>Charging Tips</h2>
+        <ul class="info-list">
+          <li>Most fast chargers accept credit cards and RFID cards</li>
+          <li>Download the PlugShare app for real-time availability</li>
+          <li>Plan your route with multiple charging options</li>
+          <li>Check connector compatibility before arriving</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Charging Speeds</h2>
+        <ul class="info-list">
+          <li><strong>Ultra-Fast (150kW+):</strong> 200-300km in 15-20 minutes</li>
+          <li><strong>Fast (50kW+):</strong> 200-300km in 30-40 minutes</li>
+          <li><strong>Standard:</strong> 200-300km in 4-6 hours</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
