@@ -121,25 +121,48 @@ function fetchAllAustralianStations() {
     });
 }
 
-function searchByPostcode(postcode) {
-  // Remove any spaces from the postcode
-  postcode = postcode.replace(/\s+/g, '');
+function searchByPostcode(query) {
+  // Remove any extra spaces and normalize the query
+  query = query.trim().replace(/\s+/g, ' ');
+  
+  // Add state context if not present
+  if (!query.toLowerCase().includes('australia') && !query.toLowerCase().includes('au')) {
+    query += ', Australia';
+  }
   
   // Use OpenCage geocoding service with the provided API key
-  fetch(`https://api.opencagedata.com/geocode/v1/json?q=${postcode}+Australia&key=f05911fa42934260a19bec4058143407`)
+  fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(query)}&key=f05911fa42934260a19bec4058143407`)
     .then(response => response.json())
     .then(data => {
       if (data.results && data.results.length > 0) {
-        const { lat, lng } = data.results[0].geometry;
-        map.setView([lat, lng], 12);
-        fetchChargingStations(lat, lng, 20); // Search within 20km
+        // Sort results by relevance score
+        const sortedResults = data.results.sort((a, b) => b.confidence - a.confidence);
+        
+        // Find the most relevant result in Australia
+        const australianResult = sortedResults.find(result => 
+          result.components.country_code === 'au'
+        );
+
+        if (australianResult) {
+          const { lat, lng } = australianResult.geometry;
+          map.setView([lat, lng], 12);
+          fetchChargingStations(lat, lng, 20); // Search within 20km
+          
+          // Update the search input with the formatted address
+          const searchInput = document.getElementById('location-search');
+          if (searchInput) {
+            searchInput.value = australianResult.formatted;
+          }
+        } else {
+          showError('Location not found in Australia. Please try a different address.');
+        }
       } else {
-        showError('Postcode not found. Please try another postcode.');
+        showError('Location not found. Please try a different address.');
       }
     })
     .catch(error => {
       console.error('Geocoding error:', error);
-      showError('Error searching for postcode. Please try again.');
+      showError('Error searching for location. Please try again.');
     });
 }
 
@@ -198,14 +221,27 @@ function addChargersToMap(chargers) {
         iconSize: [12, 12]
       });
 
+      // Format connector types, removing empty entries and duplicates
+      const connectorTypes = [...new Set(charger.connectorTypes.filter(type => type && type.trim()))];
+      
+      // Format pricing information
+      const pricingInfo = charger.pricing ? 
+        `Pricing: ${charger.pricing}` : 
+        'Pricing: Not listed';
+
       const marker = L.marker([charger.latitude, charger.longitude], { icon })
         .bindPopup(`
-          <strong>${charger.name || 'Charging Station'}</strong><br>
-          ${charger.address || ''}<br>
-          Power: ${charger.powerKW ? charger.powerKW + 'kW' : 'Unknown'}<br>
-          Connectors: ${charger.connectorTypes.length ? charger.connectorTypes.join(', ') : 'Unknown'}<br>
-          Status: ${charger.status || 'Unknown'}<br>
-          ${charger.distance ? `Distance: ${charger.distance.toFixed(1)}km` : ''}
+          <div class="charger-popup">
+            <strong>${charger.name || 'Charging Station'}</strong>
+            <div class="charger-details">
+              ${charger.address ? `<div class="detail-item"><i class="fas fa-map-marker-alt"></i> ${charger.address}</div>` : ''}
+              ${charger.powerKW ? `<div class="detail-item"><i class="fas fa-bolt"></i> ${charger.powerKW}kW</div>` : ''}
+              ${connectorTypes.length ? `<div class="detail-item"><i class="fas fa-plug"></i> ${connectorTypes.join(', ')}</div>` : ''}
+              <div class="detail-item"><i class="fas fa-tag"></i> ${pricingInfo}</div>
+              ${charger.status ? `<div class="detail-item"><i class="fas fa-info-circle"></i> ${charger.status}</div>` : ''}
+              ${charger.distance ? `<div class="detail-item"><i class="fas fa-route"></i> ${charger.distance.toFixed(1)}km away</div>` : ''}
+            </div>
+          </div>
         `);
 
       markers.push(marker);
@@ -277,9 +313,9 @@ function showRebate() {
 
 // TCO Calculator
 function calcTCO() {
-  const km = parseFloat(document.getElementById('km').value);
-  const fuelPrice = parseFloat(document.getElementById('fuelPrice').value);
-  const elecRate = parseFloat(document.getElementById('elecRate').value);
+  const km = parseFloat(document.getElementById('km').value) || 15000;
+  const fuelPrice = parseFloat(document.getElementById('fuelPrice').value) || 2.1;
+  const elecRate = parseFloat(document.getElementById('elecRate').value) || 0.25;
 
   // Example calculations (simplified)
   const evEfficiency = 0.15; // kWh/km
@@ -298,6 +334,9 @@ function calcTCO() {
       <ul>
         <li>EV Cost: $${evCost.toFixed(2)}</li>
         <li>ICE Cost: $${iceCost.toFixed(2)}</li>
+        <li>Annual Distance: ${km.toLocaleString()} km</li>
+        <li>Fuel Price: $${fuelPrice}/L</li>
+        <li>Electricity Rate: $${elecRate}/kWh</li>
       </ul>
     </div>
   `;
@@ -318,6 +357,8 @@ function updateSavingsCharts(evCost, iceCost) {
 // Emissions Calculator
 function updateEmissionsChart() {
   const carType = document.getElementById('car-comparison').value;
+  const annualKm = parseFloat(document.getElementById('emissions-km').value) || 15000;
+  
   const emissions = {
     small: { ice: 120, ev: 30 },
     medium: { ice: 180, ev: 45 },
@@ -326,6 +367,7 @@ function updateEmissionsChart() {
   
   const data = emissions[carType];
   const savings = data.ice - data.ev;
+  const annualSavings = savings * annualKm / 1000; // Convert to tonnes
   
   const chart = document.getElementById('emissions-chart');
   chart.innerHTML = `
@@ -337,6 +379,7 @@ function updateEmissionsChart() {
         ${data.ev}g/km
       </div>
     </div>
-    <p class="savings">Annual CO₂ savings: ${savings * 15000 / 1000} tonnes</p>
+    <p class="savings">Annual CO₂ savings: ${annualSavings.toFixed(1)} tonnes</p>
+    <p class="savings-note">Based on ${annualKm.toLocaleString()} km per year</p>
   `;
 }
