@@ -69,6 +69,47 @@ h1, h2, h3 {
   background: var(--light-gray);
 }
 
+/* Hamburger styles - improved for professional look */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 1100;
+  background: var(--white);
+  border: 1.5px solid var(--light-gray);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+  transition: box-shadow 0.2s;
+}
+.hamburger:hover, .hamburger.active {
+  box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+  border-color: var(--primary-color);
+}
+.hamburger span {
+  display: block;
+  height: 3.5px;
+  width: 26px;
+  background: var(--primary-color);
+  margin: 3.5px 0;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+/* Hamburger open animation */
+.hamburger.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
 /* Page Header */
 .page-header {
   background: linear-gradient(90deg, var(--primary-color) 60%, var(--accent-color) 100%);
@@ -1168,5 +1209,109 @@ ul {
     font-size: 1rem;
     padding: 0.6rem 0.75rem;
     width: 100%;
+  }
+}
+
+/* Responsive nav */
+@media (max-width: 900px) {
+  .nav {
+    flex-direction: row;
+    padding: 0.7rem 1rem;
+    min-height: 64px;
+  }
+  .brand {
+    font-size: 1.35rem;
+    padding-left: 0.2rem;
+  }
+  .hamburger {
+    display: flex;
+    margin-left: auto;
+  }
+  .nav-links {
+    position: absolute;
+    top: 64px;
+    right: 1.5rem;
+    background: var(--white);
+    flex-direction: column;
+    width: 210px;
+    box-shadow: 0 8px 32px rgba(44,62,80,0.13);
+    border-radius: 12px;
+    gap: 0;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: max-height 0.3s, opacity 0.3s;
+    border: 1.5px solid #e8f5ee;
+    z-index: 1050;
+  }
+  .nav-links.open {
+    max-height: 500px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .nav-links li {
+    width: 100%;
+  }
+  .nav-links a {
+    display: block;
+    padding: 1rem 1.5rem;
+    border-radius: 0;
+    border-bottom: 1px solid #f0f0f0;
+    color: var(--text-color);
+    background: none;
+    font-size: 1.08rem;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-links a:last-child {
+    border-bottom: none;
+  }
+  .nav-links a:hover,
+  .nav-links a.active {
+    background: var(--light-gray);
+    color: var(--primary-color);
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-links {
+    right: 0.5rem;
+    width: 95vw;
+    min-width: 0;
+  }
+  .hamburger {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* FAQ About Card Responsive Fix */
+@media (max-width: 600px) {
+  .about-card {
+    padding: 1.25rem 0.5rem 1.25rem 0.5rem;
+    margin: 1.5rem 0 2rem 0;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+  .about-content-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+  .about-social-links {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+  .about-social-links .btn {
+    width: 100%;
+    min-width: unset;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 400px) {
+  .about-card {
+    padding: 0.75rem 0.2rem 0.75rem 0.2rem;
   }
 }

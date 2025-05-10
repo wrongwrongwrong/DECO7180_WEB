@@ -2,32 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cookie Settings – Viron</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <nav class="nav">
     <div class="brand">Viron</div>
-    <ul class="nav-links">
+    <button class="hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="main-nav-links">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul class="nav-links" id="main-nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="Charging_Map.html">Charging Map</a></li>
-      <li><a href="Benefits_myths.html">Benefits & Myths</a></li>
+      <li><a href="Benefits_myths.html" class="active">Benefits &amp; Myths</a></li>
       <li><a href="Incentives.html">Incentives & TCO</a></li>
       <li><a href="FAQ_about.html">FAQ & About</a></li>
     </ul>
   </nav>
+
   <section class="page-header" style="max-width: 900px; margin: 2.5rem auto 2rem auto;">
     <h1>Cookie Settings</h1>
-    <p>Viron uses cookies to enhance your experience:</p>
+    <p class="lead">Viron uses cookies to enhance your experience. You can manage your preferences below.</p>
   </section>
   <section class="card" style="max-width: 900px; margin: 0 auto 3rem auto;">
-    <ul>
+    <ul class="info-list">
       <li><strong>Essential Cookies:</strong> These are necessary for the website to function and cannot be switched off.</li>
       <li><strong>Analytics Cookies:</strong> We may use cookies to collect anonymous usage data to improve our site. You can opt out of analytics cookies in your browser settings.</li>
       <li><strong>Third-Party Cookies:</strong> Some features (e.g., embedded maps or analytics) may use cookies from third parties. Please review their cookie policies for details.</li>
       <li><strong>Managing Cookies:</strong> Most browsers allow you to manage or disable cookies. Refer to your browser’s help section for instructions.</li>
     </ul>
-    <p style="margin-top:2rem;">For questions about cookies, contact <a href="mailto:contact@viron.com.au">contact@viron.com.au</a>.</p>
+    <p class="mb-2" style="margin-top:1.5rem;">For questions about cookies, contact <a href="mailto:contact@viron.com.au" class="citation">contact@viron.com.au</a>.</p>
   </section>
   <footer class="site-footer">
     <div class="footer-content">
@@ -50,7 +57,7 @@
         <ul>
           <li><a href="Terms.html">Terms of Service</a></li>
           <li><a href="Privacy.html">Privacy Policy</a></li>
-          <li><a href="Cookie.html">Cookie Settings</a></li>
+          <li><a href="cookies.html">Cookie Settings</a></li>
         </ul>
       </div>
       <div class="footer-section">
@@ -70,5 +77,6 @@
       <p>&copy; 2024 Viron. All rights reserved.</p>
     </div>
   </footer>
+  <script src="main.js"></script>
 </body>
 </html>

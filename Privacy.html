@@ -3,12 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <title>Privacy Policy – Viron</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <nav class="nav">
     <div class="brand">Viron</div>
-    <ul class="nav-links">
+    <button class="hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="main-nav-links">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul class="nav-links" id="main-nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="Charging_Map.html">Charging Map</a></li>
       <li><a href="Benefits_myths.html">Benefits & Myths</a></li>
@@ -16,18 +22,18 @@
       <li><a href="FAQ_about.html">FAQ & About</a></li>
     </ul>
   </nav>
-  <section class="page-header" style="max-width: 900px; margin: 2.5rem auto 2rem auto;">
+  <section class="page-header" style="max-width:900px;margin:2.5rem auto 2rem auto;">
     <h1>Privacy Policy</h1>
-    <p>Your privacy is important to us. This policy explains how we handle your information:</p>
+    <p class="lead">Your privacy is important to us. This policy explains how Viron collects, uses, and protects your information.</p>
   </section>
-  <section class="card" style="max-width: 900px; margin: 0 auto 3rem auto;">
-    <ul>
-      <li><strong>No Personal Data Collection:</strong> We do not require users to create accounts or submit personal information to use our calculators or tools.</li>
-      <li><strong>Usage Data:</strong> We may collect anonymous usage data (such as page visits or button clicks) to improve our services. This data does not identify you personally.</li>
-      <li><strong>Third-Party Services:</strong> We may use third-party analytics or APIs (e.g., Open Charge Map) which may collect data according to their own privacy policies.</li>
-      <li><strong>External Links:</strong> Our site contains links to external websites. We are not responsible for their privacy practices.</li>
-      <li><strong>Contact:</strong> For privacy questions, email <a href="mailto:contact@viron.com.au">contact@viron.com.au</a>.</li>
-      <li><strong>Policy Updates:</strong> We may update this policy. Please check this page for the latest version.</li>
+  <section class="card" style="max-width:900px;margin:0 auto 3rem auto;">
+    <ul class="info-list">
+      <li><strong>Information Collected:</strong> We may collect non-personal data (such as usage statistics) to improve our services. We do not collect personal information unless you provide it (e.g., via contact forms).</li>
+      <li><strong>Use of Data:</strong> Data is used to enhance your experience, improve our tools, and maintain site security. We do not sell your data.</li>
+      <li><strong>Third-Party Services:</strong> Some features (e.g., maps, analytics) may use third-party providers. Their privacy policies apply.</li>
+      <li><strong>Data Security:</strong> We use reasonable measures to protect your data, but cannot guarantee absolute security.</li>
+      <li><strong>Contact:</strong> For privacy questions, email <a href="mailto:contact@viron.com.au" class="citation">contact@viron.com.au</a>.</li>
+      <li><strong>Policy Changes:</strong> We may update this policy. Continued use of the site means you accept the new terms.</li>
     </ul>
   </section>
   <footer class="site-footer">

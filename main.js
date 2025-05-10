@@ -35,6 +35,28 @@ document.addEventListener('DOMContentLoaded', () => {
       icon.textContent = card.classList.contains('active') ? '-' : '+';
     });
   });
+
+  // Hamburger menu functionality
+  const hamburger = document.querySelector('.hamburger');
+  const navLinksContainer = document.querySelector('.nav-links');
+  if (hamburger && navLinksContainer) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navLinksContainer.classList.toggle('open');
+      const expanded = hamburger.classList.contains('active');
+      hamburger.setAttribute('aria-expanded', expanded);
+    });
+    // Optional: close menu when a link is clicked (mobile UX)
+    navLinksContainer.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+          hamburger.classList.remove('active');
+          navLinksContainer.classList.remove('open');
+          hamburger.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+  }
 });
 
 let map;
