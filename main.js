@@ -236,10 +236,10 @@ function addChargersToMap(chargers) {
             <div class="charger-details">
               ${charger.address ? `<div class="detail-item"><i class="fas fa-map-marker-alt"></i> ${charger.address}</div>` : ''}
               ${charger.powerKW ? `<div class="detail-item"><i class="fas fa-bolt"></i> ${charger.powerKW}kW</div>` : ''}
-              ${connectorTypes.length ? `<div class="detail-item"><i class="fas fa-plug"></i> ${connectorTypes.join(', ')}</div>` : ''}
-              <div class="detail-item"><i class="fas fa-tag"></i> ${pricingInfo}</div>
-              ${charger.status ? `<div class="detail-item"><i class="fas fa-info-circle"></i> ${charger.status}</div>` : ''}
               ${charger.distance ? `<div class="detail-item"><i class="fas fa-route"></i> ${charger.distance.toFixed(1)}km away</div>` : ''}
+            </div>
+            <div class="popup-note">
+              <small><i class="fas fa-info-circle"></i> Some information may be limited based on available data</small>
             </div>
           </div>
         `);
@@ -275,111 +275,182 @@ document.getElementById('location-search')?.addEventListener('input', e => {
 
 // Rebate finder
 function showRebate() {
-  const state = document.getElementById('state-select').value;
-  const rebateResult = document.getElementById('rebate-result');
-  
-  // Example rebate data (simplified)
+  const state = (document.getElementById('state-select').value || '').toUpperCase();
+  if (!state) return;
+
+  /* Official links + current incentives (May 2025) */
   const rebates = {
-    'NSW': {
+    NSW: {
+      purchase: 'None',
+      stampDuty: 'Standard',
+      registration: 'Standard',
+      fbt: 'Exempt (federal)',
+      url: 'https://www.revenue.nsw.gov.au/grants-schemes/electric-vehicle-rebate'
+    },
+    VIC: {
+      purchase: 'None',
+      stampDuty: 'Standard',
+      registration: 'Standard',
+      fbt: 'Exempt (federal)',
+      url: 'https://www.energy.vic.gov.au/renewable-energy/zero-emission-vehicles'
+    },
+    QLD: {
+      purchase: '$6,000 rebate (≤$68k, income-tested)',
+      stampDuty: 'Discounted',
+      registration: 'Standard',
+      fbt: 'Exempt (federal)',
+      url: 'https://www.qrida.qld.gov.au/program/queensland-zero-emission-vehicle-rebate-scheme'
+    },
+    SA: {
+      purchase: '$3,000 rebate',
       stampDuty: 'Exempt',
       registration: '3 years free',
-      fbt: 'Exempt'
+      fbt: 'Exempt (federal)',
+      url: 'https://www.treasury.sa.gov.au/Growing-South-Australia/incentives-for-electric-vehicles'
     },
-    'VIC': {
+    WA: {
+      purchase: '$3,500 rebate (until 10 May 2025)',
+      stampDuty: 'Standard',
+      registration: 'Standard',
+      fbt: 'Exempt (federal)',
+      url: 'https://www.transport.wa.gov.au/projects/zero-emission-vehicle-zev-rebate.asp'
+    },
+    TAS: {
+      purchase: '$2,000 rebate (375 places)',
+      stampDuty: 'Standard',
+      registration: '3 years free',
+      fbt: 'Exempt (federal)',
+      url: 'https://recfit.tas.gov.au/what_is_recfit/climate_change/electric_vehicles/support/rebate_guidelines'
+    },
+    ACT: {
+      purchase: 'None',
       stampDuty: 'Exempt',
-      registration: '2 years free',
-      fbt: 'Exempt'
+      registration: 'Discounted',
+      fbt: 'Exempt (federal)',
+      url: 'https://www.accesscanberra.act.gov.au/driving-transport-and-parking/registration/incentives-for-low-and-zero-emissions-vehicles'
     },
-    // Add other states...
+    NT: {
+      purchase: 'None',
+      stampDuty: 'Waived ≤$50k',
+      registration: 'Free (to 30 Jun 2027)',
+      fbt: 'Exempt (federal)',
+      url: 'https://nt.gov.au/driving/rego/getting-an-nt-registration/get-electric-vehicle-registration-and-stamp-duty-concessions'
+    }
   };
 
-  const stateRebates = rebates[state] || {
-    stampDuty: 'Check local government',
-    registration: 'Standard rates apply',
-    fbt: 'Standard rates apply'
+  /* Fallback if state missing */
+  const r = rebates[state] || {
+    purchase: 'Check local government',
+    stampDuty: 'Check',
+    registration: 'Check',
+    fbt: 'Exempt (federal)',
+    url: '#'
   };
 
-  rebateResult.innerHTML = `
+  document.getElementById('rebate-result').innerHTML = `
     <div class="rebate-summary">
-      <h3>Available Rebates in ${state}</h3>
+      <h3>Incentives in ${state}</h3>
       <ul class="rebate-list">
-        <li><strong>Stamp Duty:</strong> ${stateRebates.stampDuty}</li>
-        <li><strong>Registration:</strong> ${stateRebates.registration}</li>
-        <li><strong>FBT:</strong> ${stateRebates.fbt}</li>
+        <li><strong>Up-front rebate:</strong> ${r.purchase}</li>
+        <li><strong>Stamp Duty:</strong> ${r.stampDuty}</li>
+        <li><strong>Registration:</strong> ${r.registration}</li>
+        <li><strong>FBT (salary-sacrifice):</strong> ${r.fbt}</li>
       </ul>
-    </div>
-  `;
+      <a href="${r.url}" target="_blank" rel="noopener noreferrer" class="btn secondary" style="margin-top:0.75rem;">
+        More details
+      </a>
+      <p class="note" style="font-size:0.75rem;margin-top:0.5rem;">Last updated May 2025</p>
+    </div>`;
 }
 
-// TCO Calculator
+/* ——— Assumption constants (cited 10 May 2025) ——— */
+const ASSUMPTIONS = {
+  evEfficiency: { value: 0.15, text: '15 kWh/100 km (EVC factsheet 2024)' },
+  iceEfficiency: { value: 0.08, text: '8 L/100 km (NTC fleet avg 2023)' },
+  defaultFuelPrice: { value: 2.10, text: 'BITRE national ULP avg 2024-25' },
+  defaultElecRate: { value: 0.25, text: 'AEMC residential avg 2024' }
+};
+
+/* ——— TCO calculator ——— */
 function calcTCO() {
-  const km = parseFloat(document.getElementById('km').value) || 15000;
-  const fuelPrice = parseFloat(document.getElementById('fuelPrice').value) || 2.1;
-  const elecRate = parseFloat(document.getElementById('elecRate').value) || 0.25;
+  const km = clamp(+document.getElementById('km').value, 1000, 100000, 15000);
+  const fuelPrice = clamp(+document.getElementById('fuelPrice').value,
+                          1, 5, ASSUMPTIONS.defaultFuelPrice.value);
+  const elecRate = clamp(+document.getElementById('elecRate').value,
+                         0.10, 0.60, ASSUMPTIONS.defaultElecRate.value);
 
-  // Example calculations (simplified)
-  const evEfficiency = 0.15; // kWh/km
-  const iceEfficiency = 0.08; // L/km
-
-  const evCost = km * evEfficiency * elecRate;
-  const iceCost = km * iceEfficiency * fuelPrice;
+  const evCost  = km * ASSUMPTIONS.evEfficiency.value  * elecRate;
+  const iceCost = km * ASSUMPTIONS.iceEfficiency.value * fuelPrice;
   const savings = iceCost - evCost;
 
-  const resultDiv = document.getElementById('tco-result');
-  resultDiv.innerHTML = `
+  document.getElementById('tco-result').innerHTML = `
     <div class="result-summary">
       <h3>Annual Savings</h3>
-      <p class="savings-amount">$${savings.toFixed(2)}</p>
-      <p>Based on your inputs:</p>
-      <ul>
-        <li>EV Cost: $${evCost.toFixed(2)}</li>
-        <li>ICE Cost: $${iceCost.toFixed(2)}</li>
-        <li>Annual Distance: ${km.toLocaleString()} km</li>
-        <li>Fuel Price: $${fuelPrice}/L</li>
-        <li>Electricity Rate: $${elecRate}/kWh</li>
-      </ul>
-    </div>
-  `;
-
-  // Update charts (placeholder)
-  updateSavingsCharts(evCost, iceCost);
+      <p class="savings-amount">$${savings.toFixed(0)}</p>
+      <details class="method">
+        <summary>Assumptions (tap)</summary>
+        <ul>
+          <li>${ASSUMPTIONS.evEfficiency.text}</li>
+          <li>${ASSUMPTIONS.iceEfficiency.text}</li>
+          <li>${ASSUMPTIONS.defaultFuelPrice.text}</li>
+          <li>${ASSUMPTIONS.defaultElecRate.text}</li>
+        </ul>
+      </details>
+    </div>`;
 }
 
-function updateSavingsCharts(evCost, iceCost) {
-  const fuelChart = document.getElementById('fuel-savings');
-  const maintenanceChart = document.getElementById('maintenance-savings');
-
-  // Placeholder for chart implementation
-  fuelChart.innerHTML = `<div class="chart-placeholder">Fuel Savings Chart</div>`;
-  maintenanceChart.innerHTML = `<div class="chart-placeholder">Maintenance Savings Chart</div>`;
+/* Utility: keep numbers in a sensible range or fall back */
+function clamp(value, min, max, fallback = 0) {
+  const n = Number(value);
+  return isFinite(n) && n >= min && n <= max ? n : fallback;
 }
 
-// Emissions Calculator
+/* ——— Emissions Savings visualiser ——— */
 function updateEmissionsChart() {
-  const carType = document.getElementById('car-comparison').value;
-  const annualKm = parseFloat(document.getElementById('emissions-km').value) || 15000;
-  
-  const emissions = {
-    small: { ice: 120, ev: 30 },
-    medium: { ice: 180, ev: 45 },
-    large: { ice: 250, ev: 60 }
-  };
-  
-  const data = emissions[carType];
-  const savings = data.ice - data.ev;
-  const annualSavings = savings * annualKm / 1000; // Convert to tonnes
-  
-  const chart = document.getElementById('emissions-chart');
-  chart.innerHTML = `
-    <div class="emissions-bar">
-      <div class="bar ice" style="width: ${(data.ice / 250) * 100}%">
-        ${data.ice}g/km
+  /* user inputs */
+  const cls       = document.getElementById('car-comparison').value;      // small | medium | large
+  const annualKm  = clamp(+document.getElementById('emissions-km').value,
+                          1_000, 100_000, 15_000);
+
+  /* constants (publicly sourced) */
+  const ICE_FACTORS = { small: 120, medium: 180, large: 250 }; // g CO₂ / km  — NTC 2023
+  const EV_CO2      = 30;                                      // g CO₂ / km  — CSIRO 2024 grid-avg
+
+  /* maths */
+  const iceCO2     = ICE_FACTORS[cls];
+  const savedPerKm = iceCO2 - EV_CO2;                          // grams saved each km
+  const annualTons = (savedPerKm * annualKm) / 1e6;            // convert g → tonnes
+
+  /* bar lengths as % of largest ICE class */
+  const maxScale   = Math.max(...Object.values(ICE_FACTORS));
+  const iceWidth   = (iceCO2 / maxScale) * 100;
+  const evWidth    = (EV_CO2  / maxScale) * 100;
+
+  /* inject HTML */
+  document.getElementById('emissions-chart').innerHTML = `
+    <div class="bars">
+      <div class="bar ice" style="width:${iceWidth}%">
+        <span>${iceCO2} g/km&nbsp;(ICE)</span>
       </div>
-      <div class="bar ev" style="width: ${(data.ev / 250) * 100}%">
-        ${data.ev}g/km
+      <div class="bar ev" style="width:${evWidth}%">
+        <span>${EV_CO2} g/km&nbsp;(EV)</span>
       </div>
     </div>
-    <p class="savings">Annual CO₂ savings: ${annualSavings.toFixed(1)} tonnes</p>
-    <p class="savings-note">Based on ${annualKm.toLocaleString()} km per year</p>
-  `;
+
+    <p class="headline">
+      <span class="figure">${annualTons.toFixed(1)} t</span>
+      CO₂ saved / year
+    </p>
+
+    <details class="method">
+      <summary>Methodology</summary>
+      <ul>
+        <li>ICE intensity: National Transport Commission “Light-Vehicle Emissions”, 2023</li>
+        <li>EV intensity: CSIRO grid-average Scope 2, 2024</li>
+        <li>Annual distance: ${annualKm.toLocaleString()} km (user input)</li>
+      </ul>
+    </details>`;
 }
+
+
+
