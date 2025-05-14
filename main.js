@@ -393,8 +393,8 @@ const ASSUMPTIONS = {
   defaultElecRate: { value: 0.25, text: 'AEMC residential avg 2024' }
 };
 
-/* ——— TCO calculator ——— */
-function calcTCO() {
+/* ——— Energy Cost Savings calculator ——— */
+function calcEnergySavings() {
   const km = clamp(+document.getElementById('km').value, 1000, 100000, 15000);
   const fuelPrice = clamp(+document.getElementById('fuelPrice').value,
                           1, 5, ASSUMPTIONS.defaultFuelPrice.value);
@@ -405,7 +405,7 @@ function calcTCO() {
   const iceCost = km * ASSUMPTIONS.iceEfficiency.value * fuelPrice;
   const savings = iceCost - evCost;
 
-  document.getElementById('tco-result').innerHTML = `
+  document.getElementById('energy-savings-result').innerHTML = `
     <div class="result-summary">
       <h3>Annual Savings</h3>
       <p class="savings-amount">$${savings.toFixed(0)}</p>
@@ -467,7 +467,7 @@ function updateEmissionsChart() {
     <details class="method">
       <summary>Methodology</summary>
       <ul>
-        <li>ICE intensity: National Transport Commission “Light-Vehicle Emissions”, 2023</li>
+        <li>ICE intensity: National Transport Commission "Light-Vehicle Emissions", 2023</li>
         <li>EV intensity: CSIRO grid-average Scope 2, 2024</li>
         <li>Annual distance: ${annualKm.toLocaleString()} km (user input)</li>
       </ul>

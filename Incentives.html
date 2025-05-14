@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Viron – Incentives & TCO</title>
+  <title>Viron – Incentives & Energy Cost Savings</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -18,15 +18,19 @@
       <li><a href="index.html">Home</a></li>
       <li><a href="Charging_Map.html">Charging Map</a></li>
       <li><a href="Benefits_myths.html">Benefits &amp; Myths</a></li>
+
       <li><a href="EV_challenges.html">EV Challenges</a></li>
       <li><a href="Incentives.html" class="active">Incentives &amp; TCO</a></li>
+
+      <li><a href="Incentives.html" class="active">Incentives &amp; Energy Cost Savings</a></li>
+
       <li><a href="FAQ_about.html">FAQ & About</a></li>
     </ul>
   </nav>
 
   <section id="incentives" class="active">
     <div class="page-header">
-      <h1>Incentives &amp; TCO Calculator</h1>
+      <h1>Incentives &amp; Energy Cost Savings Calculator</h1>
       <p class="lead">Calculate your potential savings and discover available incentives in your area.</p>
     </div>
 
@@ -52,8 +56,8 @@
       </div>
 
       <div class="card">
-        <h2>TCO Calculator</h2>
-        <form id="tco-form" class="form-group">
+        <h2>Energy Cost Savings Calculator</h2>
+        <form id="energy-savings-form" class="form-group">
           <label>Annual kilometres: 
             <input type="number" id="km" value="15000" min="0" step="1000" />
           </label>
@@ -63,9 +67,9 @@
           <label>Electricity rate ($/kWh): 
             <input type="number" id="elecRate" value="0.25" step="0.01" min="0" />
           </label>
-          <button type="button" class="btn primary" onclick="calcTCO()">Calculate Savings</button>
+          <button type="button" class="btn primary" onclick="calcEnergySavings()">Calculate Savings</button>
         </form>
-        <div id="tco-result" class="result-box"></div>
+        <div id="energy-savings-result" class="result-box"></div>
       </div>
 
       <div class="card">
@@ -118,7 +122,7 @@
           <li><a href="index.html">Home</a></li>
           <li><a href="Charging_Map.html">Charging Map</a></li>
           <li><a href="Benefits_myths.html">Benefits & Myths</a></li>
-          <li><a href="Incentives.html">Incentives & TCO</a></li>
+          <li><a href="Incentives.html">Incentives & Energy Cost Savings</a></li>
           <li><a href="FAQ_about.html">FAQ & About</a></li>
         </ul>
       </div>
