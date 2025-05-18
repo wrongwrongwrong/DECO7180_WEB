@@ -41,3 +41,7 @@ Viron is an interactive, mobile-friendly web platform that helps Australian driv
 ```bash
 git clone https://github.com/your-username/viron-ev-awareness.git
 cd viron-ev-awareness
+
+## Contact details 
+Core Developer: Zhiwei Chen
+Email: s4874487@uq.edu.au
